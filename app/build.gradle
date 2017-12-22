@@ -1,0 +1,43 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        applicationId "techbie.projectx"
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    //https://github.com/JakeWharton/butterknife
+    compile 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+    //https://github.com/square/retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.3.0'
+
+    //http://square.github.io/okhttp/
+    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+
+    compile 'com.squareup.okhttp3:okhttp-urlconnection:3.7.0'
+
+    //https://futurestud.io/tutorials/retrofit-2-adding-customizing-the-gson-converter
+    compile 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    //https://github.com/square/android-times-square
+    api 'com.squareup:android-times-square:1.6.5@aar'
+
+    //https://github.com/square/okhttp/tree/master/okhttp-logging-interceptor
+    compile 'com.squareup.okhttp3:logging-interceptor:3.6.0'
+}
