@@ -1,9 +1,10 @@
-package techbie.projectx;
+package techbie.projectx.api;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import techbie.projectx.pojo.UserDataResponse;
 
 /**
  * Created by Asif Ansari on 12/22/17 12:03 PM.

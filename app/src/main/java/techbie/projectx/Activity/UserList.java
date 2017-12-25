@@ -1,4 +1,4 @@
-package techbie.projectx;
+package techbie.projectx.Activity;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -26,8 +26,15 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import techbie.projectx.APIclient;
+import techbie.projectx.PaginationScrollListener;
+import techbie.projectx.R;
+import techbie.projectx.adapter.UserAdapter;
+import techbie.projectx.pojo.UserData;
+import techbie.projectx.pojo.UserDataResponse;
 
 public class UserList extends AppCompatActivity {
+    public LinearLayoutManager linearLayoutManager;
     Context mContext;
     UserDataResponse userDataResponses;
     ArrayList<UserData> userData = new ArrayList<>();
@@ -38,6 +45,7 @@ public class UserList extends AppCompatActivity {
     @BindView(R.id.rv_main)
     RecyclerView recyclerView;
     int MIN = 1, MAX = 12;
+    boolean loading = false;
     private String TAG = this.getClass().getSimpleName();
     private ConnectivityManager connectivityManager;
     private boolean connected;
@@ -58,6 +66,7 @@ public class UserList extends AppCompatActivity {
             case R.id.refresh:
                 MIN = 1;
                 Toast.makeText(mContext, "Refresh", Toast.LENGTH_SHORT).show();
+                userData = new ArrayList<>();
                 makeServiceCall(1);
                 break;
         }
@@ -68,12 +77,35 @@ public class UserList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_list);
-
         mContext = this;
+        linearLayoutManager = new LinearLayoutManager(mContext);
         ButterKnife.bind(this);
         if (isOnline())
-            makeServiceCall(1);
+            makeServiceCall(MIN);
         else noInternetDialog();
+
+        recyclerView.addOnScrollListener(new PaginationScrollListener(linearLayoutManager) {
+            @Override
+            protected void loadMoreItems() {
+                Log.d(TAG, "loadMoreItems: " + MIN);
+                makeServiceCall(MIN);
+            }
+
+            @Override
+            public int getTotalPageCount() {
+                return 0;
+            }
+
+            @Override
+            public boolean isLastPage() {
+                return MIN >= 12;
+            }
+
+            @Override
+            public boolean isLoading() {
+                return loading;
+            }
+        });
 
     }
 
@@ -85,6 +117,7 @@ public class UserList extends AppCompatActivity {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        userData = new ArrayList<>();
                         makeServiceCall(1);
                     }
                 })
@@ -105,39 +138,39 @@ public class UserList extends AppCompatActivity {
             noInternetDialog();
             return;
         }
-        APIclient.getApi(mContext).callUserList("users", page).enqueue(new Callback<UserDataResponse>() {
-            @Override
-            public void onResponse(Call<UserDataResponse> call, Response<UserDataResponse> response) {
-                if (response.code() == 200) {
-                    userDataResponses = response.body();
-                    assert userDataResponses != null;
-                    if (userDataResponses.getData().size() > 0) {
-                        userData.addAll(userDataResponses.getData());
-                        showData();
-                    }
-                    if (MIN <= MAX)
-                        makeServiceCall(++MIN);
-                } else Log.d(TAG, "onResponse: " + response.body());
-            }
+        if (page <= 12) {
+            loading = true;
+            APIclient.getApi(mContext).callUserList("users", page).enqueue(new Callback<UserDataResponse>() {
+                @Override
+                public void onResponse(Call<UserDataResponse> call, Response<UserDataResponse> response) {
+                    if (response.code() == 200) {
+                        MIN++;
+                        userDataResponses = response.body();
+                        assert userDataResponses != null;
+                        if (userDataResponses.getData().size() > 0) {
+                            userData.addAll(userDataResponses.getData());
+                            showData();
+                        }
+                        loading = false;
+//                    if (MIN <= MAX)
+//                        makeServiceCall(++MIN);
+                    } else loading = false;
+                }
 
-            @Override
-            public void onFailure(Call<UserDataResponse> call, Throwable t) {
-                Log.e(TAG, "onFailure: ", t);
-            }
-        });
+                @Override
+                public void onFailure(Call<UserDataResponse> call, Throwable t) {
+                    Log.e(TAG, "onFailure: ", t);
+                    loading = false;
+                }
+            });
+        } else loading = false;
     }
 
     private void showData() {
-        textView.setText("");
 
-//        userData = userDataResponses.getData();
-//        for (UserData userData1 : userData) {
-//            textView.append(userData1.getId() + ") " + userData1.getFirstName() + " " + userData1.getLastName() + "\n");
-//            Picasso.with(mContext).load(userData1.getAvatar()).into(imageView);
-//        }
         UserAdapter userAdapter = new UserAdapter(userData, mContext);
         recyclerView.setAdapter(userAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        recyclerView.setLayoutManager(linearLayoutManager);
 
 
     }

@@ -1,4 +1,4 @@
-package techbie.projectx;
+package techbie.projectx.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import techbie.projectx.Activity.DetailUserView;
+import techbie.projectx.R;
+import techbie.projectx.pojo.UserData;
+
 /**
  * Created by asif on 25/12/2017.
  */
@@ -22,7 +26,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     private ArrayList<UserData> userData = new ArrayList<>();
     private Context mContext;
 
-    UserAdapter(ArrayList<UserData> userData, Context mContext) {
+    public UserAdapter(ArrayList<UserData> userData, Context mContext) {
         this.userData = userData;
         this.mContext = mContext;
     }
@@ -36,7 +40,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(UserAdapter.ViewHolder holder, final int position) {
         UserData data = userData.get(position);
-        holder.textView.setText(data.getFirstName());
+        holder.textView.setText("" + data.getId() + ") " + data.getFirstName() + " " + data.getLastName());
         Picasso.with(mContext).load(data.getAvatar()).into(holder.imageView);
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

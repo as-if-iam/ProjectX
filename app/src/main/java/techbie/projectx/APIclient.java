@@ -12,6 +12,7 @@ import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import techbie.projectx.api.API;
 
 /**
  * Created by Asif Ansari on 12/22/17 12:00 PM.
