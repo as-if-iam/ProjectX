@@ -1,6 +1,7 @@
 package techbie.projectx;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,10 +34,18 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(UserAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(UserAdapter.ViewHolder holder, final int position) {
         UserData data = userData.get(position);
         holder.textView.setText(data.getFirstName());
         Picasso.with(mContext).load(data.getAvatar()).into(holder.imageView);
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, DetailUserView.class);
+                intent.putExtra("user", userData.get(position));
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override

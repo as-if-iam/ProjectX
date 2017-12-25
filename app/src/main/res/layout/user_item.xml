@@ -7,12 +7,13 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     android:layout_marginTop="5dp"
+    android:background="@drawable/selector"
     android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/iv_item"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
+        android:layout_width="150dp"
+        android:layout_height="150dp" />
 
     <TextView
         android:id="@+id/tv_item"
@@ -20,7 +21,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="16dp"
-        android:text="Hello World!" />
+        android:ellipsize="end"
+        android:maxLines="3"
+        android:text="Hello World!"
+        android:textSize="25sp" />
 
 
 </LinearLayout>

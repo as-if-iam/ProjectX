@@ -3,11 +3,13 @@ package techbie.projectx;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * Created by Asif Ansari on 12/22/17 12:05 PM.
  */
 
-public class UserData {
+public class UserData implements Serializable {
 
     @SerializedName("id")
     @Expose
